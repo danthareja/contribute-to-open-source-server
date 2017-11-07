@@ -19,8 +19,10 @@ module.exports = Promise.coroutine(function* issues({ issue, action }) {
 
   if (action === 'opened') {
     console.log(`Closing and locking issue #${issue.number}`);
+    yield github.post(`/issues/${issue.number}/comments`, {
+      body: comments.issueOpen({ issue })
+    })
     yield github.patch(`/issues/${issue.number}`, {
-      body: comments.issueOpen({ issue }),
       state: 'closed'
     });
     return github.put(`/issues/${issue.number}/lock`, null, {
