@@ -1,0 +1,30 @@
+{
+  "name": "contribute-to-open-source-server",
+  "version": "1.0.0",
+  "description": "Powering the contribute-to-open-source experience",
+  "main": "index.js",
+  "engines": {
+    "node": "6.10.0"
+  },
+  "scripts": {
+    "prettier": "prettier --write --single-quote \"{test,hooks,comments}/**/*.js\"",
+    "test": "mocha",
+    "deploy": "serverless deploy"
+  },
+  "author": "Dan Thareja <danthareja@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.16.1",
+    "bluebird": "^3.5.0",
+    "deep-diff": "^0.3.8",
+    "mustache": "^2.3.0"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "prettier": "^1.4.4",
+    "serverless": "^1.24.0",
+    "sinon": "^2.3.5",
+    "sinon-chai": "^2.11.0"
+  }
+}

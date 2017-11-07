@@ -1,0 +1,1 @@
+I ran your code and found **{{data.stats.pending}} pending tests**. Before merging your pull request, I'd like to see that all your tests pass. Please activate these tests and ensure they pass with `npm test`.
