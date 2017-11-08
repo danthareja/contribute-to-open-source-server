@@ -1,7 +1,5 @@
-> :sparkles: Woah
+> :sparkles: Changes synced :sparkles:
 >
-> When a pull request is open, GitHub automatically tracks changes to the branch it was opened from. This pull request is tracking changes from your `{{pull.head.ref}}` branch.
->
-> As you push changes to this branch, they are posted here, creating a nice history of the conversation. It's common to have a lot of back-and-forth between reviewers and contributors on the same pull request before merging.
+> When a pull request is open, GitHub tracks changes to the branch it was opened from. As you push changes to your fork's `{{pull.head.ref}}` branch, you'll automatically see them here.
 
-Thanks for the changes @{{pull.user.login}}! I'm reviewing your code now, let's see if we can get this merged soon.
+I'm reviewing your changes now, @{{pull.user.login}}. Let's get this merged soon!

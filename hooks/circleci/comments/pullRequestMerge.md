@@ -1,6 +1,8 @@
 ## :tada: You did it! :tada:
 
-You're an open source contributor now! Whether this was your [first pull request](http://firstpr.me/), or you’re just looking for new ways to contribute, I hope you’re inspired to take action. Don't forget to say thanks when a maintainer puts effort into helping you, even if a contribution doesn't get accepted.
+You're an open source contributor now!
+
+Whether this was your [first pull request](http://firstpr.me/), or you’re just looking for new ways to contribute, I hope you’re inspired to take action. Don't forget to say thanks when a maintainer puts effort into helping you, even if a contribution doesn't get accepted.
 
 Remember, open source is made by people like you: one issue, pull request, comment, and +1 at a time.
 
@@ -30,6 +32,7 @@ Elevate your Git game:
 
 ### Questions? Comments? Concerns?
 
-I'm always open to feedback. If you had a good time with the exercise, or found some room for improvement, please let me know on [twitter](https://twitter.com/danthareja) or [email](mailto:danthareja@gmail.com)
+I'm always open to feedback. If you had a good time with the exercise, or found some room for improvement, please let me know on [twitter](https://twitter.com/danthareja) or [email](mailto:danthareja@gmail.com).
 
-#### Want to start over? Just delete your fork.
+**Want to start over? Just delete your fork.**
+**Want to see behind the scenes? [Check out the server code.](https://github.com/danthareja/contribute-to-open-source-server)**
