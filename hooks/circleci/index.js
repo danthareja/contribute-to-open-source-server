@@ -163,6 +163,8 @@ module.exports = Promise.coroutine(function*(event, context, callback) {
     yield handle(event);
     return callback();
   } catch (e) {
+    console.log('Uncaught error')
+    console.log(e)
     return callback(e);
   }
 });

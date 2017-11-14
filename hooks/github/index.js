@@ -50,6 +50,7 @@ module.exports = Promise.coroutine(function* main(event, context, callback) {
     return callback();
   } catch (e) {
     console.log('Uncaught error')
+    console.log(e)
     return callback(e);
   }
 });
