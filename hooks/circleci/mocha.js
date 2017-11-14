@@ -16,6 +16,10 @@ module.exports = class MochaParser {
     return this.json.stats.failures + this.json.stats.pending > 0;
   }
 
+  getErrorCount() {
+    return this.json.stats.failures;
+  }
+
   getReviewBody() {
     if (this.json.stats.pending > 0) {
       return comments.mochaPending({

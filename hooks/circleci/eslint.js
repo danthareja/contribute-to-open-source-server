@@ -7,6 +7,7 @@ const comments = require('./comments');
 
 module.exports = class ESLintParser {
   constructor(json, diff, pull) {
+    this._errorThreshold = 20;
     this.json = json;
     this.diff = diff;
     this.pull = pull;
@@ -16,21 +17,33 @@ module.exports = class ESLintParser {
     return this.json.some(file => file.messages.length > 0);
   }
 
-  getReviewBody() {
-    const violations = this.json.reduce(
-      (num, file) => (num += file.messages.length),
-      0
-    );
+  getErrorCount() {
+    return this.json.reduce((num, file) => num + file.messages.length, 0);
+  }
 
-    if (violations > 0) {
-      return comments.eslint({
+  getReviewBody() {
+    const errorCount = this.getErrorCount();
+
+    if (errorCount > this._errorThreshold) {
+      return comments.eslintErrorLarge({
         pull: this.pull,
-        data: { violations }
+        data: { errorCount }
+      });
+    }
+
+    if (errorCount > 0) {
+      return comments.eslintError({
+        pull: this.pull,
+        data: { errorCount }
       });
     }
   }
 
   getReviewComments() {
+    if (this.getErrorCount() > this._errorThreshold) {
+      return [];
+    }
+
     const _comments = [];
 
     this.json.forEach(file => {
