@@ -1,1 +1,1 @@
-I ran your code and found **{{data.stats.pending}} pending tests**. Before merging your pull request, I'd like to see that all your tests pass. Please activate these tests and ensure they pass with `npm test`.
+I ran your code and found **{{data.stats.pending}} pending tests**. In your test file, change `describe.skip` to `describe` to activate the pending tests. Once activated, ensure they pass with `npm test`.
