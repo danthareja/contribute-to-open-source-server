@@ -2,17 +2,20 @@
   "name": "contribute-to-open-source-server",
   "version": "1.0.0",
   "description": "Powering the contribute-to-open-source experience",
+  "author": "Dan Thareja <danthareja@gmail.com>",
+  "license": "MIT",
   "main": "index.js",
   "engines": {
     "node": "6.10.0"
   },
   "scripts": {
-    "prettier": "prettier --write --single-quote \"{test,hooks,comments}/**/*.js\"",
     "test": "mocha",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy",
+    "precommit": "npm test && lint-staged"
   },
-  "author": "Dan Thareja <danthareja@gmail.com>",
-  "license": "MIT",
+  "lint-staged": {
+    "*.{js}": ["prettier --write --single-quote", "git add"]
+  },
   "dependencies": {
     "axios": "^0.16.1",
     "bluebird": "^3.5.0",
@@ -21,6 +24,8 @@
   },
   "devDependencies": {
     "chai": "^4.0.2",
+    "husky": "^0.14.3",
+    "lint-staged": "^5.0.0",
     "mocha": "^3.4.2",
     "prettier": "^1.4.4",
     "serverless": "^1.24.0",
