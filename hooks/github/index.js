@@ -40,7 +40,7 @@ const handle = Promise.coroutine(function* handle(event) {
     );
   }
 
-  return events[type](event.body)
+  return events[type](event.body);
 });
 
 module.exports = Promise.coroutine(function* main(event, context, callback) {
@@ -49,8 +49,8 @@ module.exports = Promise.coroutine(function* main(event, context, callback) {
     yield handle(event);
     return callback();
   } catch (e) {
-    console.log('Uncaught error')
-    console.log(e)
+    console.log('Uncaught error');
+    console.log(e);
     return callback(e);
   }
 });

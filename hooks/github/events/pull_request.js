@@ -21,7 +21,7 @@ const circleci = axios.create({
 
 module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
   if (action !== 'opened' && action !== 'synchronize') {
-    console.log(`Ignoring action: ${action}`)
+    console.log(`Ignoring action: ${action}`);
     return;
   }
 

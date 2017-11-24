@@ -13,15 +13,15 @@ const github = axios.create({
 
 module.exports = Promise.coroutine(function* issues({ issue, action }) {
   if (action !== 'opened' && action !== 'reopened') {
-    console.log(`Ignoring action: ${action}`)
-    return
+    console.log(`Ignoring action: ${action}`);
+    return;
   }
 
   if (action === 'opened') {
     console.log(`Closing and locking issue #${issue.number}`);
     yield github.post(`/issues/${issue.number}/comments`, {
       body: comments.issueOpen({ issue })
-    })
+    });
     yield github.patch(`/issues/${issue.number}`, {
       state: 'closed'
     });
