@@ -115,28 +115,26 @@ const handle = Promise.coroutine(function*(event) {
 
 const getReports = Promise.coroutine(function*(number) {
   const reports = {};
+
   const artifacts = yield circleci
     .get(`/${number}/artifacts`)
     .then(res => res.data);
 
-  for (let artifact of artifacts) {
+  for (let report of ['mocha.json', 'eslint.json']) {
+    const artifact = artifacts.find(a => path.basename(a.path) === report);
+
+    if (!artifact) {
+      throw new Error(
+        `No ${report} artifact found. Ensure circle.yml stores this file.`
+      );
+    }
+
     const download = yield axios
       .get(`${artifact.url}?circle-token=${process.env.CIRCLECI_TOKEN}`)
       .then(res => res.data);
-    const type = path.basename(artifact.path, path.extname(artifact.path));
-    reports[type] = download;
-  }
 
-  if (!reports.eslint) {
-    throw new Error(
-      'No ESLint report found. Ensure circle.yml stores an artifact file named "eslint.json"'
-    );
-  }
-
-  if (!reports.mocha) {
-    throw new Error(
-      'No Mocha report found. Ensure circle.yml stores an artifact file named "mocha.json"'
-    );
+    const name = path.basename(artifact.path, path.extname(artifact.path));
+    reports[name] = download;
   }
 
   return reports;
@@ -163,8 +161,8 @@ module.exports = Promise.coroutine(function*(event, context, callback) {
     yield handle(event);
     return callback();
   } catch (e) {
-    console.log('Uncaught error')
-    console.log(e)
+    console.log('Uncaught error');
+    console.log(e);
     return callback(e);
   }
 });
