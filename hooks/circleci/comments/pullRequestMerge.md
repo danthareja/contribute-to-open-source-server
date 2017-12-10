@@ -24,7 +24,7 @@ Elevate your Git game:
 * [Try Git](https://try.github.io/) - an interactive tutorial made by GitHub
 * [Learn Git](https://www.git-tower.com/learn/) - video and written lessons for the command line and desktop client
 * [Learn Git Branching](https://learngitbranching.js.org/) - an interactive tutorial diving deep into branching
-* [GitHub Flow](https://www.youtube.com/watch?v=juLIxo42A_s) - a video video explaining the pull request process on GitHub
+* [GitHub Flow](https://www.youtube.com/watch?v=juLIxo42A_s) - a video explaining the pull request process on GitHub
 
 ### Questions? Comments? Concerns?
 
