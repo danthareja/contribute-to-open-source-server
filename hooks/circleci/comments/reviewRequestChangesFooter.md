@@ -1,1 +1,1 @@
-After you make these changes locally, commit and push them back up to your fork. When you push your changes, I'll come back for another review.
+After you update your code, follow the instructions to [save your changes locally](https://github.com/danthareja/contribute-to-open-source/blob/master/CONTRIBUTING.md#save-your-changes-locally) for the files you have updated. When you [send your changes to your fork](https://github.com/danthareja/contribute-to-open-source/blob/master/CONTRIBUTING.md#send-your-changes-to-your-fork), I'll come back for another review.
