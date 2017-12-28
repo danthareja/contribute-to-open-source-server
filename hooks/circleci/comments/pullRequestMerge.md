@@ -30,5 +30,6 @@ Elevate your Git game:
 
 I'm always open to feedback. If you had a good time with the exercise, or found some room for improvement, please [email me](mailto:danthareja@gmail.com).
 
-**Want to start over? Just delete your fork.**
-[Want to see behind the scenes?](https://github.com/danthareja/contribute-to-open-source-server)
+
+**Want to start over?** [Just delete your fork](https://github.com/{{pull.user.login}}/contribute-to-open-source/settings).
+Want to see behind the scenes? [Check out the server code](https://github.com/danthareja/contribute-to-open-source-server).
