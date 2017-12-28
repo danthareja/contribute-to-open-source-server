@@ -14,12 +14,17 @@
     "precommit": "npm test && lint-staged"
   },
   "lint-staged": {
-    "*.{js}": ["prettier --write --single-quote", "git add"]
+    "*.{js}": [
+      "prettier --write --single-quote",
+      "git add"
+    ]
   },
   "dependencies": {
     "axios": "^0.16.1",
     "bluebird": "^3.5.0",
     "deep-diff": "^0.3.8",
+    "http-link-header": "^0.8.0",
+    "moment": "^2.20.1",
     "mustache": "^2.3.0"
   },
   "devDependencies": {
