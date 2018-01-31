@@ -128,7 +128,7 @@ Promise.coroutine(function* handle(event) {
     }
   }
 
-})();
+});
 
 
 module.exports = Promise.coroutine(function* main(event, context, callback) {
