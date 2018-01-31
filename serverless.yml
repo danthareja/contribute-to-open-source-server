@@ -28,5 +28,6 @@ functions:
           cors: true
   handleCleanupTask:
     handler: index.handleCleanupTask
+    timeout: 60
     events:
       - schedule: cron(0 10 * * ? *)
