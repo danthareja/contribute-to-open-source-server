@@ -26,3 +26,7 @@ functions:
           method: post
           integration: lambda
           cors: true
+  handleCleanupTask:
+    handler: index.handleCleanupTask
+    events:
+      - schedule: cron(0 10 * * ? *)
