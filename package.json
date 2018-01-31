@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "deploy": "serverless deploy",
+    "deploy": "serverless deploy --verbose",
     "precommit": "npm test && lint-staged"
   },
   "lint-staged": {
