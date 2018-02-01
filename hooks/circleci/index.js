@@ -1,30 +1,14 @@
 const Promise = require('bluebird');
 const path = require('path');
-const axios = require('axios');
 const deepDiff = require('deep-diff').diff;
+
+const parseDiff = require('../../lib/parseDiff');
+const github = require('../../lib/github');
+const circleci = require('../../lib/circleci');
 
 const ESLint = require('./eslint');
 const Mocha = require('./mocha');
-const parseDiff = require('./diffparser');
-
 const comments = require('./comments');
-
-const github = axios.create({
-  baseURL: 'https://api.github.com/repos/danthareja/contribute-to-open-source',
-  headers: {
-    Accept: 'application/vnd.github.v3+json',
-    Authorization: `token ${process.env.GITHUB_TOKEN}`,
-    'User-Agent': '@danthareja'
-  }
-});
-
-const circleci = axios.create({
-  baseURL:
-    'https://circleci.com/api/v1.1/project/github/danthareja/contribute-to-open-source',
-  params: {
-    'circle-token': process.env.CIRCLECI_TOKEN
-  }
-});
 
 /**
  * CircleCI verification strategy:

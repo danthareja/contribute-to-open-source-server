@@ -1,15 +1,6 @@
 const Promise = require('bluebird');
-const axios = require('axios');
+const github = require('../../../lib/github');
 const comments = require('../comments');
-
-const github = axios.create({
-  baseURL: 'https://api.github.com/repos/danthareja/contribute-to-open-source',
-  headers: {
-    Accept: 'application/vnd.github.v3+json',
-    Authorization: `token ${process.env.GITHUB_TOKEN}`,
-    'User-Agent': 'danthareja/contribute-to-open-source-server'
-  }
-});
 
 module.exports = Promise.coroutine(function* issues({ issue, action }) {
   if (action !== 'opened' && action !== 'reopened') {

@@ -1,23 +1,8 @@
 const Promise = require('bluebird');
 const axios = require('axios');
+const github = require('../../../lib/github');
+const circleci = require('../../../lib/circleci');
 const comments = require('../comments');
-
-const github = axios.create({
-  baseURL: 'https://api.github.com/repos/danthareja/contribute-to-open-source',
-  headers: {
-    Accept: 'application/vnd.github.v3+json',
-    Authorization: `token ${process.env.GITHUB_TOKEN}`,
-    'User-Agent': 'danthareja/contribute-to-open-source-server'
-  }
-});
-
-const circleci = axios.create({
-  baseURL:
-    'https://circleci.com/api/v1.1/project/github/danthareja/contribute-to-open-source',
-  params: {
-    'circle-token': process.env.CIRCLECI_TOKEN
-  }
-});
 
 module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
   if (action !== 'opened' && action !== 'synchronize') {
