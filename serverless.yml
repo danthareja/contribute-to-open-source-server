@@ -3,6 +3,7 @@ service: contribute-to-open-source-lambda
 package:
   exclude:
   - .circleci/**
+  - .github/**
 
 provider:
   name: aws
@@ -15,6 +16,7 @@ provider:
     CIRCLECI_TOKEN: ${env:CIRCLECI_TOKEN}
     GITHUB_TOKEN: ${env:GITHUB_TOKEN}
     GITHUB_SECRET: ${env:GITHUB_SECRET}
+    ROLLBAR_TOKEN: ${env:ROLLBAR_TOKEN}
 
 functions:
   handleGitHubWebhook:

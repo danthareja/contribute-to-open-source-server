@@ -22,6 +22,14 @@ jobs:
       - run:
           name: Deploy to AWS
           command: serverless deploy -v
+      - run:
+          name: Notify Rollbar of deploy
+          command: |
+            curl https://api.rollbar.com/api/1/deploy/ \
+              -F access_token=$ROLLBAR_TOKEN \
+              -F environment=production \
+              -F revision=$CIRCLE_SHA1 \
+              -F local_username=$CIRCLE_PROJECT_USERNAME
       - save_cache:
           key: dependencies-cache-{{ checksum "package.json" }}
           paths:

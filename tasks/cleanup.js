@@ -1,6 +1,9 @@
 const Promise = require('bluebird');
 const moment = require('moment');
+
 const github = require('../lib/github');
+const rollbar = require('../lib/rollbar');
+
 const comments = require('./comments');
 
 Promise.coroutine(function* handle(event) {
@@ -105,13 +108,11 @@ Promise.coroutine(function* handle(event) {
 });
 
 
-module.exports = Promise.coroutine(function* main(event, context, callback) {
+module.exports = rollbar.lambdaHandler(Promise.coroutine(function* main(event, context, callback) {
   try {
     yield handle(event);
     return callback();
   } catch (e) {
-    console.log('Uncaught error');
-    console.log(e);
     return callback(e);
   }
-});
+}));

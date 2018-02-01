@@ -2,6 +2,8 @@ const Promise = require('bluebird');
 const crypto = require('crypto');
 const events = require('./events');
 
+const rollbar = require('../../lib/rollbar');
+
 /**
  * GitHub verification strategy:
  * https://developer.github.com/webhooks/securing/
@@ -43,17 +45,15 @@ const handle = Promise.coroutine(function* handle(event) {
   return events[type](event.body);
 });
 
-module.exports = Promise.coroutine(function* main(event, context, callback) {
+module.exports = rollbar.lambdaHandler(Promise.coroutine(function* main(event, context, callback) {
   try {
     yield verify(event);
     yield handle(event);
     return callback();
   } catch (e) {
-    console.log('Uncaught error');
-    console.log(e);
     return callback(e);
   }
-});
+}));
 
 module.exports.verify = verify;
 module.exports.handle = handle;

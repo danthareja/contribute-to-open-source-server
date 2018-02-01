@@ -5,6 +5,7 @@ const deepDiff = require('deep-diff').diff;
 const parseDiff = require('../../lib/parseDiff');
 const github = require('../../lib/github');
 const circleci = require('../../lib/circleci');
+const rollbar = require('../../lib/rollbar');
 
 const ESLint = require('./eslint');
 const Mocha = require('./mocha');
@@ -139,17 +140,15 @@ const getPullRequest = Promise.coroutine(function*(number) {
   return github.get(`/pulls/${number}`).then(res => res.data);
 });
 
-module.exports = Promise.coroutine(function*(event, context, callback) {
+module.exports = rollbar.lambdaHandler(Promise.coroutine(function*(event, context, callback) {
   try {
     yield verify(event);
     yield handle(event);
     return callback();
   } catch (e) {
-    console.log('Uncaught error');
-    console.log(e);
     return callback(e);
   }
-});
+}));
 
 module.exports.verify = verify;
 module.exports.handle = handle;
