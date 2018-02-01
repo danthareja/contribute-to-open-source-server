@@ -6,7 +6,7 @@ const rollbar = require('../lib/rollbar');
 
 const comments = require('./comments');
 
-Promise.coroutine(function* handle(event) {
+const handle = Promise.coroutine(function* handle(event) {
   const staged = []
   const oneWeekAgo = moment().subtract(7, 'days').startOf('day')
 
