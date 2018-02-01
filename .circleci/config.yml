@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:6.10
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependencies-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install and dependencies
+          command: npm i
+      - run:
+          name: Run tests
+          command: npm test
+      - run:
+          name: Install Serverless CLI
+          command: sudo npm i -g serverless
+      - run:
+          name: Deploy to AWS
+          command: serverless deploy -v
+      - save_cache:
+          key: dependencies-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules

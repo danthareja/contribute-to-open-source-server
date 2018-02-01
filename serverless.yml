@@ -1,5 +1,9 @@
 service: contribute-to-open-source-lambda
 
+package:
+  exclude:
+  - .circleci/**
+
 provider:
   name: aws
   runtime: nodejs6.10

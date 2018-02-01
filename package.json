@@ -10,8 +10,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "deploy": "serverless deploy --verbose",
-    "precommit": "npm test && lint-staged"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "*.{js}": [
@@ -33,7 +32,6 @@
     "lint-staged": "^5.0.0",
     "mocha": "^3.4.2",
     "prettier": "^1.4.4",
-    "serverless": "^1.24.0",
     "sinon": "^2.3.5",
     "sinon-chai": "^2.11.0"
   }
