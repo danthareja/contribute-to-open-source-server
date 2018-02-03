@@ -1,5 +1,6 @@
 const Promise = require('bluebird');
 const path = require('path');
+const axios = require('axios');
 const deepDiff = require('deep-diff').diff;
 
 const parseDiff = require('../../lib/parseDiff');
