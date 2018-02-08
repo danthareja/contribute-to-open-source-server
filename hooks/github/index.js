@@ -44,6 +44,8 @@ module.exports = Promise.coroutine(function* main(event, context, callback) {
   try {
     yield verify(event);
   } catch (e) {
+    console.log('Verify error');
+    console.log(e);
     bugsnag.notify(e, { event });
     return callback(e);
   }
@@ -51,6 +53,8 @@ module.exports = Promise.coroutine(function* main(event, context, callback) {
   try {
     yield handle(event);
   } catch (e) {
+    console.log('Handle error');
+    console.log(e);
     bugsnag.notify(e, {
       event,
       severity: 'error'
