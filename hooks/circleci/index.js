@@ -1,28 +1,28 @@
-const Promise = require("bluebird");
-const path = require("path");
-const axios = require("axios");
-const deep = require("deep-diff");
-const bugsnag = require("bugsnag");
+const Promise = require('bluebird');
+const path = require('path');
+const axios = require('axios');
+const deep = require('deep-diff');
+const bugsnag = require('bugsnag');
 
-const parseDiff = require("../../lib/parseDiff");
-const github = require("../../lib/github");
-const circleci = require("../../lib/circleci");
+const parseDiff = require('../../lib/parseDiff');
+const github = require('../../lib/github');
+const circleci = require('../../lib/circleci');
 
-const ESLint = require("./eslint");
-const Mocha = require("./mocha");
-const comments = require("./comments");
+const ESLint = require('./eslint');
+const Mocha = require('./mocha');
+const comments = require('./comments');
 
 const verify = Promise.coroutine(function*(event) {
   if (!event.body) {
-    throw new Error("No request body");
+    throw new Error('No request body');
   }
 
   if (!event.body.payload) {
-    throw new Error("No payload");
+    throw new Error('No payload');
   }
 
   if (!event.body.payload.build_num) {
-    throw new Error("No build number");
+    throw new Error('No build number');
   }
 
   const build = yield circleci
@@ -33,10 +33,10 @@ const verify = Promise.coroutine(function*(event) {
   // Because this is expected, we can safely exclude them from the check
   const differences = deep
     .diff(build, event.body.payload)
-    .filter(d => !d.path.includes("output_url"));
+    .filter(d => !d.path.includes('output_url'));
 
   if (differences.length > 0) {
-    throw new Error("Payload does not match");
+    throw new Error('Payload does not match');
   }
 });
 
@@ -44,7 +44,7 @@ const handle = Promise.coroutine(function*(event) {
   const { build_num, branch, outcome, status } = event.body.payload;
   console.log(`Processing build #${build_num}`);
 
-  if (outcome === "canceled" || status === "canceled") {
+  if (outcome === 'canceled' || status === 'canceled') {
     console.log(`Skipping build #${build_num} because it was canceled`);
     return;
   }
@@ -69,20 +69,20 @@ const handle = Promise.coroutine(function*(event) {
   if (eslint.hasErrors() || mocha.hasErrors()) {
     console.log(`Requesting changes for pull request #${pull.number}`);
     return github.post(`/pulls/${pull.number}/reviews`, {
-      event: "REQUEST_CHANGES",
+      event: 'REQUEST_CHANGES',
       body: [
         comments.reviewRequestChangesHeader({ pull }),
         mocha.getReviewBody(),
         eslint.getReviewBody(),
         comments.reviewRequestChangesFooter({ pull })
-      ].join("\n\n"),
+      ].join('\n\n'),
       comments: [...mocha.getReviewComments(), ...eslint.getReviewComments()]
     });
   }
 
   console.log(`Approving pull request #${pull.number}`);
   return github.post(`/pulls/${pull.number}/reviews`, {
-    event: "APPROVE",
+    event: 'APPROVE',
     body: comments.reviewApprove({ pull })
   });
 });
@@ -94,7 +94,7 @@ const getReports = Promise.coroutine(function*(number) {
     .get(`/${number}/artifacts`)
     .then(res => res.data);
 
-  for (let report of ["mocha.json", "eslint.json"]) {
+  for (let report of ['mocha.json', 'eslint.json']) {
     const artifact = artifacts.find(a => path.basename(a.path) === report);
 
     if (!artifact) {
@@ -118,7 +118,7 @@ const getPullRequestDiff = Promise.coroutine(function*(number) {
   return github
     .get(`/pulls/${number}`, {
       headers: {
-        Accept: "application/vnd.github.v3.diff"
+        Accept: 'application/vnd.github.v3.diff'
       }
     })
     .then(res => parseDiff(res.data));
@@ -141,7 +141,7 @@ module.exports = Promise.coroutine(function*(event, context, callback) {
   } catch (e) {
     bugsnag.notify(e, {
       event,
-      severity: "error"
+      severity: 'error'
     });
     return callback(e);
   }
