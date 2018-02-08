@@ -23,7 +23,7 @@ jobs:
           name: Deploy to AWS
           command: serverless deploy -v
       - run:
-          name: Notify Rollbar of deploy
+          name: Notify Rollbar
           command: |
             curl https://api.rollbar.com/api/1/deploy/ \
               -F access_token=$ROLLBAR_TOKEN \
