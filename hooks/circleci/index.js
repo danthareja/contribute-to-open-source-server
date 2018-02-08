@@ -66,24 +66,24 @@ const handle = Promise.coroutine(function*(event) {
   const eslint = new ESLint(reports.eslint, diff, pull);
   const mocha = new Mocha(reports.mocha, diff, pull);
 
-  if (!eslint.hasErrors() && !mocha.hasErrors()) {
-    console.log(`Approving pull request #${pull.number}`);
-    yield github.post(`/pulls/${pull.number}/reviews`, {
-      event: 'APPROVE',
-      body: comments.reviewApprove({ pull })
+  if (eslint.hasErrors() || mocha.hasErrors()) {
+    console.log(`Requesting changes for pull request #${pull.number}`);
+    return github.post(`/pulls/${pull.number}/reviews`, {
+      event: 'REQUEST_CHANGES',
+      body: [
+        comments.reviewRequestChangesHeader({ pull }),
+        mocha.getReviewBody(),
+        eslint.getReviewBody(),
+        comments.reviewRequestChangesFooter({ pull })
+      ].join('\n\n'),
+      comments: [...mocha.getReviewComments(), ...eslint.getReviewComments()]
     });
   }
 
-  console.log(`Requesting changes for pull request #${pull.number}`);
+  console.log(`Approving pull request #${pull.number}`);
   return github.post(`/pulls/${pull.number}/reviews`, {
-    event: 'REQUEST_CHANGES',
-    body: [
-      comments.reviewRequestChangesHeader({ pull }),
-      mocha.getReviewBody(),
-      eslint.getReviewBody(),
-      comments.reviewRequestChangesFooter({ pull })
-    ].join('\n\n'),
-    comments: [...mocha.getReviewComments(), ...eslint.getReviewComments()]
+    event: 'APPROVE',
+    body: comments.reviewApprove({ pull })
   });
 });
 
