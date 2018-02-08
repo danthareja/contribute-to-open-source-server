@@ -78,12 +78,6 @@ const handle = Promise.coroutine(function*(event) {
       event: 'APPROVE',
       body: comments.reviewApprove({ pull })
     });
-    console.log(`Merging pull request #${pull.number}`);
-    yield github.put(`/pulls/${pull.number}/merge`);
-    yield Promise.delay(1000);
-    return github.post(`/issues/${pull.number}/comments`, {
-      body: comments.pullRequestMerge({ pull })
-    });
   }
 
   console.log(`Requesting changes for pull request #${pull.number}`);
