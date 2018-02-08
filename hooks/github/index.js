@@ -2,8 +2,6 @@ const Promise = require('bluebird');
 const crypto = require('crypto');
 const events = require('./events');
 
-const rollbar = require('../../lib/rollbar');
-
 const verify = Promise.coroutine(function* verify(event) {
   if (!event.body) {
     throw new Error('No request body');
@@ -41,7 +39,7 @@ const handle = Promise.coroutine(function* handle(event) {
   return events[type](event.body);
 });
 
-module.exports = rollbar.lambdaHandler(Promise.coroutine(function* main(event, context, callback) {
+module.exports = Promise.coroutine(function* main(event, context, callback) {
   try {
     yield verify(event);
     yield handle(event);
@@ -49,7 +47,7 @@ module.exports = rollbar.lambdaHandler(Promise.coroutine(function* main(event, c
   } catch (e) {
     return callback(e);
   }
-}));
+});
 
 module.exports.verify = verify;
 module.exports.handle = handle;
