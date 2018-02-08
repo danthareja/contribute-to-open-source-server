@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const path = require('path');
 const axios = require('axios');
 const deep = require('deep-diff');
+const bugsnag = require('bugsnag');
 
 const parseDiff = require('../../lib/parseDiff');
 const github = require('../../lib/github');
@@ -30,9 +31,9 @@ const verify = Promise.coroutine(function*(event) {
 
   // Two requests for the same build will return different 'output_urls'
   // Because this is expected, we can safely exclude them from the check
-  const differences = deep.diff(build, event.body.payload).filter(
-    d => !d.path.includes('output_url')
-  );
+  const differences = deep
+    .diff(build, event.body.payload)
+    .filter(d => !d.path.includes('output_url'));
 
   if (differences.length > 0) {
     throw new Error('Payload does not match');
@@ -120,21 +121,28 @@ const getPullRequestDiff = Promise.coroutine(function*(number) {
         Accept: 'application/vnd.github.v3.diff'
       }
     })
-    .then(res => parseDiff(res.data))
+    .then(res => parseDiff(res.data));
 });
 
 const getPullRequest = Promise.coroutine(function*(number) {
-  return github
-    .get(`/pulls/${number}`)
-    .then(res => res.data);
+  return github.get(`/pulls/${number}`).then(res => res.data);
 });
 
 module.exports = Promise.coroutine(function*(event, context, callback) {
   try {
     yield verify(event);
-    yield handle(event);
-    return callback();
   } catch (e) {
+    bugsnag.notify(e, { event });
+    return callback(e);
+  }
+
+  try {
+    yield handle(event);
+  } catch (e) {
+    bugsnag.notify(e, {
+      event,
+      severity: 'error'
+    });
     return callback(e);
   }
 });

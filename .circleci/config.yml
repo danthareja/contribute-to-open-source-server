@@ -22,6 +22,21 @@ jobs:
       - run:
           name: Deploy to AWS
           command: serverless deploy -v
+      - run:
+          name: Notify Bugsnag
+          command: |
+            curl https://build.bugsnag.com/ \
+              --header "Content-Type: application/json" \
+              --data '{
+                "apiKey": "$BUGSNAG_TOKEN",
+                "appVersion": "$(node -p "require('./package.json').version")",
+                "builderName": "$CIRCLE_PROJECT_USERNAME",
+                "sourceControl": {
+                  "provider": "github",
+                  "repository": "$CIRCLE_REPOSITORY_URL",
+                  "revision": $CIRCLE_SHA1"
+                }
+              }'
       - save_cache:
           key: dependencies-cache-{{ checksum "package.json" }}
           paths:

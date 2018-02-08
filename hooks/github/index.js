@@ -1,5 +1,6 @@
 const Promise = require('bluebird');
 const crypto = require('crypto');
+const bugsnag = require('bugsnag');
 const events = require('./events');
 
 const verify = Promise.coroutine(function* verify(event) {
@@ -42,9 +43,18 @@ const handle = Promise.coroutine(function* handle(event) {
 module.exports = Promise.coroutine(function* main(event, context, callback) {
   try {
     yield verify(event);
-    yield handle(event);
-    return callback();
   } catch (e) {
+    bugsnag.notify(e, { event });
+    return callback(e);
+  }
+
+  try {
+    yield handle(event);
+  } catch (e) {
+    bugsnag.notify(e, {
+      event,
+      severity: 'error'
+    });
     return callback(e);
   }
 });
