@@ -16,7 +16,7 @@ provider:
     CIRCLECI_TOKEN: ${env:CIRCLECI_TOKEN}
     GITHUB_TOKEN: ${env:GITHUB_TOKEN}
     GITHUB_SECRET: ${env:GITHUB_SECRET}
-    ROLLBAR_TOKEN: ${env:ROLLBAR_TOKEN}
+    BUGSNAG_TOKEN: ${env:BUGSNAG_TOKEN}
 
 functions:
   handleGitHubWebhook:
