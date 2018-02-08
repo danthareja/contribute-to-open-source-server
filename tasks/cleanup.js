@@ -77,6 +77,8 @@ const handle = Promise.coroutine(function* handle(event) {
     }))
 
 
+  // Delete staged branches
+
   console.log(`found ${staged.length} branches to delete`)
 
   for (let branch of staged) {

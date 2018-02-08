@@ -1,7 +1,7 @@
 const Promise = require('bluebird');
 const path = require('path');
 const axios = require('axios');
-const deepDiff = require('deep-diff').diff;
+const deep = require('deep-diff');
 
 const parseDiff = require('../../lib/parseDiff');
 const github = require('../../lib/github');
@@ -12,12 +12,6 @@ const ESLint = require('./eslint');
 const Mocha = require('./mocha');
 const comments = require('./comments');
 
-/**
- * CircleCI verification strategy:
- * The webhook payload should be identical to the Build API
- * (source: https://circleci.com/docs/1.0/configuration/#notify)
- * We can verify the payload against an independent GET request to the Build API
- */
 const verify = Promise.coroutine(function*(event) {
   if (!event.body) {
     throw new Error('No request body');
@@ -35,9 +29,9 @@ const verify = Promise.coroutine(function*(event) {
     .get(`/${event.body.payload.build_num}`)
     .then(res => res.data);
 
-  // Two GET requests for the same build will return different 'output_urls'
+  // Two requests for the same build will return different 'output_urls'
   // Because this is expected, we can safely exclude them from the check
-  const differences = deepDiff(build, event.body.payload).filter(
+  const differences = deep.diff(build, event.body.payload).filter(
     d => !d.path.includes('output_url')
   );
 
@@ -121,18 +115,19 @@ const getReports = Promise.coroutine(function*(number) {
 });
 
 const getPullRequestDiff = Promise.coroutine(function*(number) {
-  const diff = yield github
+  return github
     .get(`/pulls/${number}`, {
       headers: {
         Accept: 'application/vnd.github.v3.diff'
       }
     })
-    .then(res => res.data);
-  return parseDiff(diff);
+    .then(res => parseDiff(res.data))
 });
 
 const getPullRequest = Promise.coroutine(function*(number) {
-  return github.get(`/pulls/${number}`).then(res => res.data);
+  return github
+    .get(`/pulls/${number}`)
+    .then(res => res.data);
 });
 
 module.exports = rollbar.lambdaHandler(Promise.coroutine(function*(event, context, callback) {

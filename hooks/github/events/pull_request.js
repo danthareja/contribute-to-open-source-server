@@ -18,6 +18,7 @@ module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
       `Pull request #${number} opened against wrong branch (${pull.base
         .ref} instead of ${pull.user.login})`
     );
+
     const builds = yield circleci.get('/').then(res => res.data);
     const buildsForThisPull = builds
       .filter(build => build.branch === `pull/${pull.number}`)
@@ -63,9 +64,7 @@ module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
   }
 });
 
-/**
- * Guarantee population of the `mergable` attribute
- */
+// Guarantee population of the `mergable` attribute
 const getPullRequest = Promise.coroutine(function*(number) {
   const pull = yield github.get(`/pulls/${number}`).then(res => res.data);
   if (typeof pull.mergeable === 'boolean') {

@@ -5,7 +5,7 @@
 
 const comments = require('./comments');
 
-module.exports = class ESLintParser {
+module.exports = class ESLintReport {
   constructor(json = [], diff, pull) {
     this._errorThreshold = 20;
     this.json = json;

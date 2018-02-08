@@ -4,10 +4,6 @@ const events = require('./events');
 
 const rollbar = require('../../lib/rollbar');
 
-/**
- * GitHub verification strategy:
- * https://developer.github.com/webhooks/securing/
- */
 const verify = Promise.coroutine(function* verify(event) {
   if (!event.body) {
     throw new Error('No request body');
@@ -28,7 +24,7 @@ const verify = Promise.coroutine(function* verify(event) {
     .digest('hex')}`;
 
   if (!crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(actual))) {
-    throw new Error('Signature does not match');
+    throw new Error('Invalid signature');
   }
 });
 

@@ -5,7 +5,7 @@
 
 const comments = require('./comments');
 
-module.exports = class MochaParser {
+module.exports = class MochaReport {
   constructor(json = {}, diff, pull) {
     this.json = json;
     this.diff = diff;
