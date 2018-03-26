@@ -29,17 +29,19 @@ const verify = Promise.coroutine(function*(event) {
     .get(`/${event.body.payload.build_num}`)
     .then(res => res.data);
 
-  // Two requests for the same build will return different 'output_urls'
-  // Because this is expected, we can safely exclude them from the check
-  const differences = deep
-    .diff(build, event.body.payload)
-    .filter(d => !d.path.includes('output_url'));
+  const differences = deep.diff(build, event.body.payload).filter(
+    d =>
+      // Some keys from the webhook's payload will be slightly different
+      // from the response from the Build API.
+      // Because this is expected, we can safely exclude them from the check
+      !d.path.includes('output_url') && !d.path.includes('ssh_enabled')
+  );
 
   if (differences.length > 0) {
     throw new Error(`
-      Payload does not match. Differences:
+      Payload for #${event.body.payload.build_num} does not match API result.
 
-      ${JSON.stringify(differences, null, 2)}
+      Differences: ${JSON.stringify(differences, null, 2)}
     `);
   }
 });
