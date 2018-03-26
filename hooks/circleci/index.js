@@ -36,7 +36,11 @@ const verify = Promise.coroutine(function*(event) {
     .filter(d => !d.path.includes('output_url'));
 
   if (differences.length > 0) {
-    throw new Error('Payload does not match');
+    throw new Error(`
+      Payload does not match. Differences:
+
+      ${JSON.stringify(differences, null, 2)}
+    `);
   }
 });
 
