@@ -1,7 +1,6 @@
 const Promise = require('bluebird');
 const axios = require('axios');
 const github = require('../../../lib/github');
-const circleci = require('../../../lib/circleci');
 const comments = require('../comments');
 
 module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
@@ -15,21 +14,10 @@ module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
 
   if (pull.base.ref !== pull.user.login) {
     console.log(
-      `Pull request #${number} opened against wrong branch (${pull.base
-        .ref} instead of ${pull.user.login})`
+      `Pull request #${number} opened against wrong branch (${
+        pull.base.ref
+      } instead of ${pull.user.login})`
     );
-
-    const builds = yield circleci.get('/').then(res => res.data);
-    const buildsForThisPull = builds
-      .filter(build => build.branch === `pull/${pull.number}`)
-      .sort((a, b) => b.build_num - a.build_num);
-
-    if (buildsForThisPull.length > 0) {
-      console.log(
-        `Canceling CircleCI build #${buildsForThisPull[0].build_num}`
-      );
-      yield circleci.post(`/${buildsForThisPull[0].build_num}/cancel`);
-    }
 
     yield github.post(`/issues/${pull.number}/comments`, {
       body: comments.pullRequestWrongBranch({ pull })

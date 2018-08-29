@@ -55,6 +55,11 @@ const handle = Promise.coroutine(function*(event) {
     return;
   }
 
+  if (outcome === 'failed' || status === 'failed') {
+    console.log(`Skipping build #${build_num} because it failed`);
+    return;
+  }
+
   const pull_num = (branch.match(/pull\/(\d+)/) || [])[1];
   if (!pull_num) {
     console.log(
