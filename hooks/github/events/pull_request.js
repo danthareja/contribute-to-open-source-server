@@ -10,7 +10,7 @@ module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
   }
 
   console.log(`Processing pull request #${number}`);
-  const pull = yield getPullRequest(number);
+  const pull = yield github.getPullRequest(number);
 
   if (pull.base.ref !== pull.user.login) {
     console.log(
@@ -50,14 +50,4 @@ module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
       body: comments.pullRequestSync({ pull })
     });
   }
-});
-
-// Guarantee population of the `mergable` attribute
-const getPullRequest = Promise.coroutine(function*(number) {
-  const pull = yield github.get(`/pulls/${number}`).then(res => res.data);
-  if (typeof pull.mergeable === 'boolean') {
-    return pull;
-  }
-  yield Promise.delay(500);
-  return getPullRequest(number);
 });

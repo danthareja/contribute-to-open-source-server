@@ -3,7 +3,7 @@
  * source: https://mochajs.org/#json
  */
 
-const comments = require('./comments');
+const comments = require('../comments');
 
 module.exports = class MochaReport {
   constructor(json = {}, diff, pull) {

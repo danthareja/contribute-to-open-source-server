@@ -4,12 +4,11 @@ const axios = require('axios');
 const deep = require('deep-diff');
 const bugsnag = require('bugsnag');
 
-const parseDiff = require('../../lib/parseDiff');
 const github = require('../../lib/github');
 const circleci = require('../../lib/circleci');
 
-const ESLint = require('./eslint');
-const Mocha = require('./mocha');
+const ESLintReport = require('./reports/eslint');
+const MochaReport = require('./reports/mocha');
 const comments = require('./comments');
 
 const verify = Promise.coroutine(function*(event) {
@@ -68,14 +67,14 @@ const handle = Promise.coroutine(function*(event) {
     return;
   }
 
-  const [reports, diff, pull] = yield Promise.all([
-    getReports(build_num),
-    getPullRequestDiff(pull_num),
-    getPullRequest(pull_num)
+  const [artifacts, diff, pull] = yield Promise.all([
+    circleci.getArtifacts(build_num, ['mocha.json', 'eslint.json']),
+    github.getPullRequestDiff(pull_num),
+    github.getPullRequest(pull_num)
   ]);
 
-  const eslint = new ESLint(reports.eslint, diff, pull);
-  const mocha = new Mocha(reports.mocha, diff, pull);
+  const eslint = new ESLintReport(artifacts.eslint, diff, pull);
+  const mocha = new MochaReport(artifacts.mocha, diff, pull);
 
   if (eslint.hasErrors() || mocha.hasErrors()) {
     console.log(`Requesting changes for pull request #${pull.number}`);
@@ -96,47 +95,6 @@ const handle = Promise.coroutine(function*(event) {
     event: 'APPROVE',
     body: comments.reviewApprove({ pull })
   });
-});
-
-const getReports = Promise.coroutine(function*(number) {
-  const reports = {};
-
-  const artifacts = yield circleci
-    .get(`/${number}/artifacts`)
-    .then(res => res.data);
-
-  for (let report of ['mocha.json', 'eslint.json']) {
-    const artifact = artifacts.find(a => path.basename(a.path) === report);
-
-    if (!artifact) {
-      throw new Error(
-        `No ${report} artifact found. Ensure circle.yml stores this file.`
-      );
-    }
-
-    const download = yield axios
-      .get(`${artifact.url}?circle-token=${process.env.CIRCLECI_TOKEN}`)
-      .then(res => res.data);
-
-    const name = path.basename(artifact.path, path.extname(artifact.path));
-    reports[name] = download;
-  }
-
-  return reports;
-});
-
-const getPullRequestDiff = Promise.coroutine(function*(number) {
-  return github
-    .get(`/pulls/${number}`, {
-      headers: {
-        Accept: 'application/vnd.github.v3.diff'
-      }
-    })
-    .then(res => parseDiff(res.data));
-});
-
-const getPullRequest = Promise.coroutine(function*(number) {
-  return github.get(`/pulls/${number}`).then(res => res.data);
 });
 
 module.exports = Promise.coroutine(function*(event, context, callback) {
