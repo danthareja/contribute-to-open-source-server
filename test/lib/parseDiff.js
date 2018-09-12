@@ -1,10 +1,10 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
 
-describe('hooks/github', () => {
+describe('lib/parseDiff', () => {
   it('should import without errors', () => {
     expect(() => {
-      require('../../src/hooks/github');
+      require('../../src/lib/parseDiff');
     }).to.not.throw();
   });
 });

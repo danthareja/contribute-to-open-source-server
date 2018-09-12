@@ -2,7 +2,11 @@ const Promise = require('bluebird');
 const github = require('../../../lib/github');
 const comments = require('../comments');
 
-module.exports = Promise.coroutine(function* pullRequestReview({ action, pull_request, review }) {
+module.exports = Promise.coroutine(function* pullRequestReview({
+  action,
+  pull_request,
+  review
+}) {
   if (action !== 'submitted') {
     console.log(`Ignoring action: ${action} (expected submitted)`);
     return;
@@ -17,10 +21,14 @@ module.exports = Promise.coroutine(function* pullRequestReview({ action, pull_re
   // while still using configured authentication credentials
   const authenticatedUser = yield github
     .get('https://api.github.com/user')
-    .then(res => res.data)
+    .then(res => res.data);
 
   if (review.user.login !== authenticatedUser.login) {
-    console.log(`Ignoring review user: ${review.user.login} (expected ${authenticatedUser.login})`);
+    console.log(
+      `Ignoring review user: ${review.user.login} (expected ${
+        authenticatedUser.login
+      })`
+    );
     return;
   }
 
