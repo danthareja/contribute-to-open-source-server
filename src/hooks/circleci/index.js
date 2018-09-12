@@ -6,10 +6,10 @@ const bugsnag = require('bugsnag');
 
 const github = require('../../lib/github');
 const circleci = require('../../lib/circleci');
+const comments = require('../../comments');
 
 const ESLintReport = require('./reports/eslint');
 const MochaReport = require('./reports/mocha');
-const comments = require('./comments');
 
 const verify = Promise.coroutine(function*(event) {
   if (!event.body) {

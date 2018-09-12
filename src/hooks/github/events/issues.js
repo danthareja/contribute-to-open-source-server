@@ -1,6 +1,6 @@
 const Promise = require('bluebird');
 const github = require('../../../lib/github');
-const comments = require('../comments');
+const comments = require('../../../comments');
 
 module.exports = Promise.coroutine(function* issues({ issue, action }) {
   if (action !== 'opened' && action !== 'reopened') {

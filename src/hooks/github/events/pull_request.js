@@ -1,7 +1,7 @@
 const Promise = require('bluebird');
 const axios = require('axios');
 const github = require('../../../lib/github');
-const comments = require('../comments');
+const comments = require('../../../comments');
 
 module.exports = Promise.coroutine(function* pullRequest({ number, action }) {
   if (action !== 'opened' && action !== 'synchronize') {

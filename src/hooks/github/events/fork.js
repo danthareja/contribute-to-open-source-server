@@ -1,6 +1,6 @@
 const Promise = require('bluebird');
 const github = require('../../../lib/github');
-const comments = require('../comments');
+const comments = require('../../../comments');
 
 module.exports = Promise.coroutine(function* fork({ forkee }) {
   const master = yield github.get(`/branches/master`).then(res => res.data);

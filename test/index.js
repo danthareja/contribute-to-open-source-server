@@ -1,3 +1,4 @@
+require('./comments');
 require('./hooks/github');
 require('./hooks/circleci');
 require('./lib/circleci');

@@ -3,7 +3,7 @@ const moment = require('moment');
 const bugsnag = require('bugsnag');
 
 const github = require('../lib/github');
-const comments = require('./comments');
+const comments = require('../comments');
 
 const handle = Promise.coroutine(function* handle(event) {
   const staged = [];
