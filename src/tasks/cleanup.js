@@ -125,11 +125,11 @@ const handle = Promise.coroutine(function* handle(event) {
 module.exports = Promise.coroutine(function* main(event, context, callback) {
   try {
     yield handle(event);
+    return callback(null);
   } catch (e) {
-    console.log('Handle error');
-    console.log(e);
     bugsnag.notify(e, {
       event,
+      context,
       severity: 'error'
     });
     return callback(e);

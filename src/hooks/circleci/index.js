@@ -13,15 +13,18 @@ const MochaReport = require('./reports/mocha');
 
 const verify = Promise.coroutine(function*(event) {
   if (!event.body) {
-    throw new Error('No request body');
+    console.log('No request body');
+    return false;
   }
 
   if (!event.body.payload) {
-    throw new Error('No payload');
+    console.log('No payload');
+    return false;
   }
 
   if (!event.body.payload.build_num) {
-    throw new Error('No build number');
+    console.log('No build number');
+    return false;
   }
 
   const build = yield circleci
@@ -37,12 +40,15 @@ const verify = Promise.coroutine(function*(event) {
   );
 
   if (differences.length > 0) {
-    throw new Error(`
+    console.log(`
       Payload for #${event.body.payload.build_num} does not match API result.
 
       Differences: ${JSON.stringify(differences, null, 2)}
     `);
+    return false;
   }
+
+  return true;
 });
 
 const handle = Promise.coroutine(function*(event) {
@@ -108,21 +114,14 @@ const handle = Promise.coroutine(function*(event) {
 
 module.exports = Promise.coroutine(function*(event, context, callback) {
   try {
-    yield verify(event);
+    if (yield verify(event)) {
+      yield handle(event);
+    }
+    return callback(null);
   } catch (e) {
-    console.log('Verify error');
-    console.log(e);
-    bugsnag.notify(e, { event });
-    return callback(e);
-  }
-
-  try {
-    yield handle(event);
-  } catch (e) {
-    console.log('Handle error');
-    console.log(e);
     bugsnag.notify(e, {
       event,
+      context,
       severity: 'error'
     });
     return callback(e);

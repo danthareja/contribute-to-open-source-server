@@ -5,15 +5,18 @@ const events = require('./events');
 
 const verify = Promise.coroutine(function* verify(event) {
   if (!event.body) {
-    throw new Error('No request body');
+    console.log('No request body');
+    return false;
   }
 
   if (!event.headers) {
-    throw new Error('No request headers');
+    console.log('No request headers');
+    return false;
   }
 
   if (!event.headers['X-Hub-Signature']) {
-    throw new Error('Request not signed');
+    console.log('Request not signed');
+    return false;
   }
 
   const expected = event.headers['X-Hub-Signature'];
@@ -23,8 +26,11 @@ const verify = Promise.coroutine(function* verify(event) {
     .digest('hex')}`;
 
   if (!crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(actual))) {
-    throw new Error('Invalid signature');
+    console.log('Invalid signature');
+    return false;
   }
+
+  return true;
 });
 
 const handle = Promise.coroutine(function* handle(event) {
@@ -33,7 +39,7 @@ const handle = Promise.coroutine(function* handle(event) {
 
   if (!events[type]) {
     throw new Error(
-      `GitHub event ${type} not implemented. Please uncheck it from webhook settings.`
+      `GitHub event ${type} not implemented. Please an implementation in events/ or uncheck it from the repo's webhook settings.`
     );
   }
 
@@ -42,21 +48,14 @@ const handle = Promise.coroutine(function* handle(event) {
 
 module.exports = Promise.coroutine(function* main(event, context, callback) {
   try {
-    yield verify(event);
+    if (yield verify(event)) {
+      yield handle(event);
+    }
+    return callback(null);
   } catch (e) {
-    console.log('Verify error');
-    console.log(e);
-    bugsnag.notify(e, { event });
-    return callback(e);
-  }
-
-  try {
-    yield handle(event);
-  } catch (e) {
-    console.log('Handle error');
-    console.log(e);
     bugsnag.notify(e, {
       event,
+      context,
       severity: 'error'
     });
     return callback(e);
