@@ -34,7 +34,7 @@ github.getPullRequest = Promise.coroutine(function*(number) {
     return pull;
   }
   yield Promise.delay(500);
-  return getPullRequest(number);
+  return github.getPullRequest(number);
 });
 
 github.getPullRequestDiff = Promise.coroutine(function*(number) {
