@@ -67,10 +67,19 @@ const handle = Promise.coroutine(function*(event) {
     return;
   }
 
-  const [artifacts, diff, pull] = yield Promise.all([
+  const pull = yield github.getPullRequest(pull_num);
+  if (pull.base.ref !== pull.user.login) {
+    console.log(
+      `Skipping build ${build_num} because it is for a pull request opened against wrong branch (${
+        pull.base.ref
+      } instead of ${pull.user.login})`
+    );
+    return;
+  }
+
+  const [artifacts, diff] = yield Promise.all([
     circleci.getArtifacts(build_num, ['mocha.json', 'eslint.json']),
-    github.getPullRequestDiff(pull_num),
-    github.getPullRequest(pull_num)
+    github.getPullRequestDiff(pull_num)
   ]);
 
   const eslint = new ESLintReport(artifacts.eslint, diff, pull);
