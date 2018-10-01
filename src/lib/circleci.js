@@ -26,9 +26,7 @@ circleci.getArtifacts = Promise.coroutine(function*(number, files) {
       );
     }
 
-    const download = yield axios
-      .get(`${artifact.url}?circle-token=${process.env.CIRCLECI_TOKEN}`)
-      .then(res => res.data);
+    const download = yield circleci.get(artifact.url).then(res => res.data);
 
     const name = path.basename(artifact.path, path.extname(artifact.path));
     output[name] = download;
