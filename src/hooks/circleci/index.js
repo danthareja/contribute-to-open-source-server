@@ -83,27 +83,24 @@ const handle = Promise.coroutine(function*(event) {
     github.getPullRequestDiff(pull_num)
   ]);
 
-  const eslint = new ESLintReport(artifacts.eslint, diff, pull);
-  const mocha = new MochaReport(artifacts.mocha, diff, pull);
+  const reports = [
+    new ESLintReport(artifacts.eslint, diff, pull),
+    new MochaReport(artifacts.mocha, diff, pull)
+  ];
 
-  if (eslint.hasErrors() || mocha.hasErrors()) {
-    console.log(`Requesting changes for pull request #${pull.number}`);
-    return github.post(`/pulls/${pull.number}/reviews`, {
-      event: 'REQUEST_CHANGES',
-      body: [
-        comments.reviewRequestChangesHeader({ pull }),
-        mocha.getReviewBody(),
-        eslint.getReviewBody(),
-        comments.reviewRequestChangesFooter({ pull })
-      ].join('\n\n'),
-      comments: [...mocha.getReviewComments(), ...eslint.getReviewComments()]
-    });
-  }
+  const hasErrors = reports.some(report => report.hasErrors());
 
-  console.log(`Approving pull request #${pull.number}`);
   return github.post(`/pulls/${pull.number}/reviews`, {
-    event: 'APPROVE',
-    body: comments.reviewApprove({ pull })
+    event: hasErrors ? 'REQUEST_CHANGES' : 'APPROVE',
+    body: reports
+      .reduce((body, report) => body.concat(report.getReviewBody()), [
+        comments.pullRequestReviewHeader({ pull, hasErrors })
+      ])
+      .join('\n\n'),
+    comments: reports.reduce(
+      (comments, report) => comments.concat(report.getReviewComments()),
+      []
+    )
   });
 });
 

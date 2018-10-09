@@ -19,7 +19,8 @@
     "deep-diff": "^0.3.8",
     "http-link-header": "^0.8.0",
     "moment": "^2.20.1",
-    "mustache": "^2.3.0"
+    "mustache": "^2.3.0",
+    "stacktrace-parser": "^0.1.4"
   },
   "devDependencies": {
     "chai": "^4.0.2",

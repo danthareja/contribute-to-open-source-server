@@ -1,1 +1,0 @@
-I've marked a few [style guide](https://github.com/danthareja/contribute-to-open-source/blob/master/CONTRIBUTING.md#style-guide) violations with inline comments. Please review the comments below and make the appropriate changes. Remember, you can check your code's style locally with `npm run lint`.

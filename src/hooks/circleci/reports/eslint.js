@@ -3,11 +3,11 @@
  * source: http://eslint.org/docs/user-guide/formatters/#json
  */
 
-const comments = require('../../../comments');
+const { eslintReviewBody, eslintReviewComment } = require('../../../comments');
 
 module.exports = class ESLintReport {
   constructor(json = [], diff, pull) {
-    this._errorThreshold = 20;
+    this._maxReviewComments = 20;
     this.json = json;
     this.diff = diff;
     this.pull = pull;
@@ -22,29 +22,21 @@ module.exports = class ESLintReport {
   }
 
   getReviewBody() {
-    const errorCount = this._getErrorCount();
-
-    if (errorCount > this._errorThreshold) {
-      return comments.eslintErrorLarge({
-        pull: this.pull,
-        data: { errorCount }
-      });
-    }
-
-    if (errorCount > 0) {
-      return comments.eslintError({
-        pull: this.pull,
-        data: { errorCount }
-      });
-    }
+    return eslintReviewBody({
+      hasErrors: this.hasErrors(),
+      pull: this.pull,
+      data: {
+        errorCount: this._getErrorCount()
+      }
+    });
   }
 
   getReviewComments() {
-    if (this._getErrorCount() > this._errorThreshold) {
+    if (!this.hasErrors()) {
       return [];
     }
 
-    const _comments = [];
+    const comments = [];
 
     this.json.forEach(file => {
       if (file.messages.length === 0) {
@@ -69,10 +61,10 @@ module.exports = class ESLintReport {
           return;
         }
 
-        _comments.push({
+        comments.push({
           path: diff.to,
           position: change.position,
-          body: comments.eslintInline({
+          body: eslintReviewComment({
             pull: this.pull,
             data: message
           })
@@ -80,6 +72,6 @@ module.exports = class ESLintReport {
       });
     });
 
-    return _comments;
+    return comments.slice(0, this._maxReviewComments);
   }
 };

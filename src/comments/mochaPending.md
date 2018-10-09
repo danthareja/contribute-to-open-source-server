@@ -1,1 +1,0 @@
-I ran your code and found **{{data.stats.pending}} pending tests**. In your test file, change `describe.skip` to `describe` so all the tests run. Make sure to [save the changes to the test file](https://github.com/danthareja/contribute-to-open-source/blob/master/CONTRIBUTING.md#save-your-changes-locally) and ensure they pass by running `npm test`.
