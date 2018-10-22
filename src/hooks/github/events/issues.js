@@ -3,6 +3,11 @@ const github = require('../../../lib/github');
 const comments = require('../../../comments');
 
 module.exports = Promise.coroutine(function* issues({ issue, action }) {
+  if (issue.number === 1) {
+    console.log('Ignoring issue #1');
+    return;
+  }
+
   if (action !== 'opened' && action !== 'reopened') {
     console.log(`Ignoring action: ${action}`);
     return;
