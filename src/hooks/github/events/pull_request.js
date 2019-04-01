@@ -1,5 +1,4 @@
 const Promise = require('bluebird');
-const axios = require('axios');
 const github = require('../../../lib/github');
 const comments = require('../../../comments');
 

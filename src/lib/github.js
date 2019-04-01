@@ -1,5 +1,6 @@
 const Promise = require('bluebird');
 const axios = require('axios');
+const rax = require('retry-axios');
 const LinkHeader = require('http-link-header');
 const parseDiff = require('./parseDiff');
 
@@ -11,6 +12,11 @@ const github = axios.create({
     'User-Agent': 'danthareja/contribute-to-open-source-server'
   }
 });
+
+github.defaults.raxConfig = {
+  instance: github
+};
+rax.attach(github);
 
 github.getAll = Promise.coroutine(function* getAll(url, options) {
   const response = yield this.get(url, options);

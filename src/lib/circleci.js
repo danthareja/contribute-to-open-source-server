@@ -1,6 +1,7 @@
-const path = require('path');
 const Promise = require('bluebird');
+const path = require('path');
 const axios = require('axios');
+const rax = require('retry-axios');
 
 const circleci = axios.create({
   baseURL:
@@ -9,6 +10,11 @@ const circleci = axios.create({
     'circle-token': process.env.CIRCLECI_TOKEN
   }
 });
+
+circleci.defaults.raxConfig = {
+  instance: circleci
+};
+rax.attach(circleci);
 
 circleci.getArtifacts = Promise.coroutine(function*(number, files) {
   const output = {};

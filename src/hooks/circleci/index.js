@@ -1,6 +1,5 @@
 const Promise = require('bluebird');
 const path = require('path');
-const axios = require('axios');
 const deep = require('deep-diff');
 const bugsnag = require('bugsnag');
 
