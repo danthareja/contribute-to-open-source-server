@@ -1,23 +1,25 @@
 service: contribute-to-open-source-lambda
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-offline
   - serverless-ngrok-tunnel
 
 package:
   exclude:
-  - .circleci/**
+  - .buildkite/**
   - .github/**
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   stage: prod
   region: us-west-1
   memorySize: 128
   timeout: 30
   environment:
-    CIRCLECI_TOKEN: ${env:CIRCLECI_TOKEN}
+    BUILDKITE_TOKEN: ${env:BUILDKITE_TOKEN}
+    BUILDKITE_SECRET: ${env:BUILDKITE_SECRET}
     GITHUB_TOKEN: ${env:GITHUB_TOKEN}
     GITHUB_SECRET: ${env:GITHUB_SECRET}
     BUGSNAG_TOKEN: ${env:BUGSNAG_TOKEN}
@@ -31,19 +33,14 @@ functions:
           method: post
           integration: lambda
           cors: true
-  handleCircleCIWebhook:
-    handler: index.handleCircleCIWebhook
+  handleBuildkiteWebhook:
+    handler: index.handleBuildkiteWebhook
     events:
       - http:
-          path: hooks/circleci
+          path: hooks/buildkite
           method: post
           integration: lambda
           cors: true
-  handleCleanupTask:
-    handler: index.handleCleanupTask
-    timeout: 60
-    events:
-      - schedule: cron(0 10 * * ? *)
   handleHealthTask:
     handler: index.handleHealthTask
     events:
@@ -55,10 +52,7 @@ functions:
 
 custom:
   ngrokTunnel:
-    envPath: '.env'
     tunnels:
       - port: 3000
-        # ngrokOptions: # optional. custom ngrok options 
-        #   authtoken: '12345'
-        #   region: 'us',
-        #   subdomain: 'my-subdomain'
+        ngrokOptions:
+          authtoken: ${env:NGROK_TOKEN}

@@ -1,10 +1,10 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
 
-describe('lib/circleci', () => {
+describe('hooks/buildkite', () => {
   it('should import without errors', () => {
     expect(() => {
-      require('../../src/lib/circleci');
+      require('../../src/hooks/buildkite');
     }).to.not.throw();
   });
 });

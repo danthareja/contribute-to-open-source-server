@@ -1,11 +1,12 @@
-const Promise = require('bluebird');
 const axios = require('axios');
 const rax = require('retry-axios');
 const LinkHeader = require('http-link-header');
 const parseDiff = require('./parseDiff');
 
 const github = axios.create({
-  baseURL: 'https://api.github.com/repos/danthareja/contribute-to-open-source',
+  baseURL: process.env.IS_OFFLINE
+    ? 'https://api.github.com/repos/danthareja/contribute-to-open-source-dev'
+    : 'https://api.github.com/repos/danthareja/contribute-to-open-source-dev',
   headers: {
     Accept: 'application/vnd.github.v3+json',
     Authorization: `token ${process.env.GITHUB_TOKEN}`,
@@ -18,32 +19,44 @@ github.defaults.raxConfig = {
 };
 rax.attach(github);
 
-github.getAll = Promise.coroutine(function* getAll(url, options) {
-  const response = yield this.get(url, options);
+github.interceptors.response.use(
+  function onGithubSuccess(response) {
+    return response;
+  },
+  function onGithubError(error) {
+    return Promise.reject(
+      `GITHUB API ERROR: ${
+        error.response.data.message
+      } (${error.config.method.toUpperCase()} ${error.config.url})`
+    );
+  }
+);
+
+github.getAll = async function(url, options) {
+  const response = await this.get(url, options);
 
   if (response.headers.link) {
     const link = LinkHeader.parse(response.headers.link);
     if (link.rel('next').length > 0) {
       return response.data.concat(
-        yield github.getAll(link.get('rel', 'next')[0].uri)
+        await github.getAll(link.get('rel', 'next')[0].uri)
       );
     }
   }
 
   return response.data;
-});
+};
 
-// Guarantee population of the `mergable` attribute
-github.getPullRequest = Promise.coroutine(function*(number) {
-  const pull = yield github.get(`/pulls/${number}`).then(res => res.data);
+github.getPullRequest = async function(number) {
+  const pull = await github.get(`/pulls/${number}`).then(res => res.data);
   if (typeof pull.mergeable === 'boolean') {
     return pull;
   }
-  yield Promise.delay(500);
+  await new Promise(resolve => setTimeout(resolve, 500));
   return github.getPullRequest(number);
-});
+};
 
-github.getPullRequestDiff = Promise.coroutine(function*(number) {
+github.getPullRequestDiff = async function(number) {
   return github
     .get(`/pulls/${number}`, {
       headers: {
@@ -51,6 +64,6 @@ github.getPullRequestDiff = Promise.coroutine(function*(number) {
       }
     })
     .then(res => parseDiff(res.data));
-});
+};
 
 module.exports = github;

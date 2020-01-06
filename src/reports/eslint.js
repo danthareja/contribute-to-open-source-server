@@ -3,7 +3,7 @@
  * source: http://eslint.org/docs/user-guide/formatters/#json
  */
 
-const { eslintReviewBody, eslintReviewComment } = require('../../../comments');
+const { eslintReviewBody, eslintReviewComment } = require('../comments');
 
 module.exports = class ESLintReport {
   constructor(json = [], diff, pull) {

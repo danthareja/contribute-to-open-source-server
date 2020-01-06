@@ -4,7 +4,7 @@
  */
 
 const StacktraceParser = require('stacktrace-parser');
-const { mochaReviewBody, mochaReviewComment } = require('../../../comments');
+const { mochaReviewBody, mochaReviewComment } = require('../comments');
 
 module.exports = class MochaReport {
   constructor(json = {}, diff, pull) {
