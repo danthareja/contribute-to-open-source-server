@@ -1,8 +1,7 @@
-const Promise = require('bluebird');
 const github = require('../../../lib/github');
 const comments = require('../../../comments');
 
-module.exports = Promise.coroutine(function* issues({ issue, action }) {
+module.exports = async function issues({ issue, action }) {
   if (issue.number === 1) {
     console.log('Ignoring issue #1');
     return;
@@ -15,23 +14,29 @@ module.exports = Promise.coroutine(function* issues({ issue, action }) {
 
   if (action === 'opened') {
     console.log(`Closing and locking issue #${issue.number}`);
-    yield github.post(`/issues/${issue.number}/comments`, {
+    await github.post(`/issues/${issue.number}/comments`, {
       body: comments.issueOpen({ issue })
     });
-    yield github.patch(`/issues/${issue.number}`, {
+    await github.patch(`/issues/${issue.number}`, {
       state: 'closed'
     });
-    return github.put(`/issues/${issue.number}/lock`, null, {
+    await github.put(`/issues/${issue.number}/lock`, null, {
       headers: {
         'Content-Length': 0
       }
     });
+    return {
+      success: true
+    };
   }
 
   if (action === 'reopened') {
     console.log(`Closing reopened issue #${issue.number}`);
-    yield github.patch(`/issues/${issue.number}`, {
+    await github.patch(`/issues/${issue.number}`, {
       state: 'closed'
     });
+    return {
+      success: true
+    };
   }
-});
+};

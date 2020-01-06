@@ -1,10 +1,10 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
 
-describe('hooks/circle', () => {
+describe('reports/eslint', () => {
   it('should import without errors', () => {
     expect(() => {
-      require('../../src/hooks/circleci');
+      require('../../src/reports/eslint');
     }).to.not.throw();
   });
 });

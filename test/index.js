@@ -1,7 +1,9 @@
 require('./comments');
 require('./hooks/github');
-require('./hooks/circleci');
-require('./lib/circleci');
+require('./hooks/buildkite');
+require('./lib/buildkite');
 require('./lib/github');
 require('./lib/parseDiff');
-require('./tasks/cleanup');
+require('./reports/eslint');
+require('./reports/mocha');
+require('./tasks/health');

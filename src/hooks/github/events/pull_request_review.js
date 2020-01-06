@@ -1,8 +1,7 @@
-const Promise = require('bluebird');
 const github = require('../../../lib/github');
 const comments = require('../../../comments');
 
-module.exports = Promise.coroutine(function* pullRequestReview({
+module.exports = async function pullRequestReview({
   action,
   pull_request,
   review
@@ -32,7 +31,7 @@ module.exports = Promise.coroutine(function* pullRequestReview({
   }
 
   // Ensure that we only merge pull requests that our bot account reviews
-  const authenticatedUser = yield github
+  const authenticatedUser = await github
     .get('https://api.github.com/user')
     .then(res => res.data);
 
@@ -46,9 +45,12 @@ module.exports = Promise.coroutine(function* pullRequestReview({
   }
 
   console.log(`Merging pull request #${pull_request.number}`);
-  yield github.put(`/pulls/${pull_request.number}/merge`);
-  yield Promise.delay(1000);
-  return github.post(`/issues/${pull_request.number}/comments`, {
+  await github.put(`/pulls/${pull_request.number}/merge`);
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  await github.post(`/issues/${pull_request.number}/comments`, {
     body: comments.pullRequestMerge({ pull: pull_request })
   });
-});
+  return {
+    success: true
+  };
+};
