@@ -1,5 +1,9 @@
 service: contribute-to-open-source-lambda
 
+plugins:
+  - serverless-offline
+  - serverless-ngrok-tunnel
+
 package:
   exclude:
   - .circleci/**
@@ -11,7 +15,7 @@ provider:
   stage: prod
   region: us-west-1
   memorySize: 128
-  timeout: 20
+  timeout: 30
   environment:
     CIRCLECI_TOKEN: ${env:CIRCLECI_TOKEN}
     GITHUB_TOKEN: ${env:GITHUB_TOKEN}
@@ -40,3 +44,21 @@ functions:
     timeout: 60
     events:
       - schedule: cron(0 10 * * ? *)
+  handleHealthTask:
+    handler: index.handleHealthTask
+    events:
+      - http:
+          path: health
+          method: get
+          integration: lambda
+          cors: true
+
+custom:
+  ngrokTunnel:
+    envPath: '.env'
+    tunnels:
+      - port: 3000
+        # ngrokOptions: # optional. custom ngrok options 
+        #   authtoken: '12345'
+        #   region: 'us',
+        #   subdomain: 'my-subdomain'
