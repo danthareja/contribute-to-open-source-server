@@ -9,7 +9,7 @@ All the tests are passing. Nice job!
 {{/hasErrors}}
 {{#hasErrors}}
 {{#data.stats.passes}}
-There are **{{data.stats.passes.length}} tests passing**. Nice job!
+There are **{{data.stats.passes}} tests passing**. Nice job!
 {{/data.stats.passes}}
 
 {{#data.passes}}
