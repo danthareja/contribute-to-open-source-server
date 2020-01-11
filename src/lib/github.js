@@ -6,7 +6,7 @@ const parseDiff = require('./parseDiff');
 const github = axios.create({
   baseURL: process.env.IS_OFFLINE
     ? 'https://api.github.com/repos/danthareja/contribute-to-open-source-dev'
-    : 'https://api.github.com/repos/danthareja/contribute-to-open-source-dev',
+    : 'https://api.github.com/repos/danthareja/contribute-to-open-source',
   headers: {
     Accept: 'application/vnd.github.v3+json',
     Authorization: `token ${process.env.GITHUB_TOKEN}`,
