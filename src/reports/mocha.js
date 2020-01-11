@@ -14,13 +14,7 @@ module.exports = class MochaReport {
   }
 
   hasErrors() {
-    return this.hasRuntimeErrors() || this.hasTestErrors();
-  }
-
-  hasRuntimeErrors() {
-    // If there is a syntax error in the submitted code,
-    // mocha crashes and outputs an empty report
-    return this.json == '';
+    return this.hasTestErrors() || this.hasRuntimeError();
   }
 
   hasTestErrors() {
@@ -30,11 +24,22 @@ module.exports = class MochaReport {
     );
   }
 
+  hasRuntimeError() {
+    return typeof this.json == 'string';
+  }
+
+  getRuntimeError() {
+    if (this.hasRuntimeError()) {
+      return this.json;
+    }
+  }
+
   getReviewBody() {
     return mochaReviewBody({
       hasAnyErrors: this.hasErrors(),
-      hasRuntimeErrors: this.hasRuntimeErrors(),
+      hasRuntimeError: this.hasRuntimeError(),
       hasTestErrors: this.hasTestErrors(),
+      runtimeError: this.getRuntimeError(),
       pull: this.pull,
       data: this.json
     });

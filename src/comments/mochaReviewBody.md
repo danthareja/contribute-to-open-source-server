@@ -7,9 +7,14 @@ All the tests are passing. Nice job!
 ✅ {{{fullTitle}}}
 {{/data.passes}}
 {{/hasAnyErrors}}
-{{#hasRuntimeErrors}}
-There was a fatal error when running Mocha. This is likely due to a syntax error in your code. Fix any ESLint errors, and try again.
-{{/hasRuntimeErrors}}
+{{#hasRuntimeError}}
+There was an error when running `npm test`. Please revisit your code and fix this error.
+
+```
+{{{runtimeError}}}
+```
+
+{{/hasRuntimeError}}
 {{#hasTestErrors}}
 {{#data.stats.passes}}
 There are **{{data.stats.passes}} tests passing**. Nice job!
