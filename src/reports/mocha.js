@@ -18,6 +18,8 @@ module.exports = class MochaReport {
   }
 
   hasRuntimeErrors() {
+    // If there is a syntax error in the submitted code,
+    // mocha crashes and outputs an empty report
     return this.json == '';
   }
 
