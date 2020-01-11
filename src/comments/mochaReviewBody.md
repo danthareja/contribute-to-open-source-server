@@ -1,13 +1,16 @@
 ---
 
-{{^hasErrors}}
+{{^hasAnyErrors}}
 All the tests are passing. Nice job!
 
 {{#data.passes}}
 ✅ {{{fullTitle}}}
 {{/data.passes}}
-{{/hasErrors}}
-{{#hasErrors}}
+{{/hasAnyErrors}}
+{{#hasRuntimeErrors}}
+There was a fatal error when running Mocha. This is likely due to a syntax error in your code. Fix any ESLint errors, and try again.
+{{/hasRuntimeErrors}}
+{{#hasTestErrors}}
 {{#data.stats.passes}}
 There are **{{data.stats.passes}} tests passing**. Nice job!
 {{/data.stats.passes}}
@@ -47,4 +50,4 @@ There are **{{data.stats.failures}} tests failing**. Please revisit your code an
 ```
 
 {{/data.failures}}
-{{/hasErrors}}
+{{/hasTestErrors}}

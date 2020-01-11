@@ -14,6 +14,14 @@ module.exports = class MochaReport {
   }
 
   hasErrors() {
+    return this.hasRuntimeErrors() || this.hasTestErrors();
+  }
+
+  hasRuntimeErrors() {
+    return this.json == '';
+  }
+
+  hasTestErrors() {
     return (
       this.json.stats &&
       (this.json.stats.failures > 0 || this.json.stats.pending > 0)
@@ -22,14 +30,16 @@ module.exports = class MochaReport {
 
   getReviewBody() {
     return mochaReviewBody({
-      hasErrors: this.hasErrors(),
+      hasAnyErrors: this.hasErrors(),
+      hasRuntimeErrors: this.hasRuntimeErrors(),
+      hasTestErrors: this.hasTestErrors(),
       pull: this.pull,
       data: this.json
     });
   }
 
   getReviewComments() {
-    if (!this.hasErrors()) {
+    if (!this.hasTestErrors()) {
       return [];
     }
 
