@@ -63,18 +63,21 @@ buildkite.buildPullRequest = async function(pull) {
   const { commit } = await axios
     .get(`${pull.head.repo.url}/commits/${pull.head.sha}`)
     .then(res => res.data);
-  return buildkite.post('/builds', {
-    commit: pull.head.sha,
-    branch: pull.head.label,
-    message: commit.message,
-    author: {
-      name: commit.author.name,
-      email: commit.author.email
-    },
-    pull_request_base_branch: pull.base.label,
-    pull_request_id: pull.number,
-    pull_request_repository: pull.base.repo.git_url
-  });
+
+  return buildkite
+    .post('/builds', {
+      commit: pull.head.sha,
+      branch: pull.head.label,
+      message: commit.message,
+      author: {
+        name: commit.author.name,
+        email: commit.author.email
+      },
+      pull_request_base_branch: pull.base.label,
+      pull_request_id: pull.number,
+      pull_request_repository: pull.base.repo.git_url
+    })
+    .then(res => res.data);
 };
 
 module.exports = buildkite;
