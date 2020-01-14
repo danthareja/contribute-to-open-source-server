@@ -1,4 +1,5 @@
 const github = require('../../../lib/github');
+const buildkite = require('../../../lib/buildkite');
 const comments = require('../../../comments');
 
 module.exports = async function pullRequest({ number, action }) {
@@ -33,9 +34,6 @@ module.exports = async function pullRequest({ number, action }) {
     await github.post(`/issues/${pull.number}/comments`, {
       body: comments.pullRequestMergeConflict({ pull })
     });
-
-    console.log(`Closing pull request #${number}`);
-    await github.patch(`/pulls/${pull.number}`, { state: 'closed' });
     return {
       success: true
     };
@@ -43,6 +41,10 @@ module.exports = async function pullRequest({ number, action }) {
 
   if (action === 'opened') {
     console.log(`Pull request #${number} opened for the first time`);
+    await buildkite.post('/builds', {
+      commit: pull.head.label,
+      branch: pull.head.label
+    });
     await github.post(`/issues/${pull.number}/comments`, {
       body: comments.pullRequestOpen({ pull })
     });
@@ -53,6 +55,10 @@ module.exports = async function pullRequest({ number, action }) {
 
   if (action === 'synchronize') {
     console.log(`Pull request #${number} synchronized`);
+    await buildkite.post('/builds', {
+      commit: pull.head.label,
+      branch: pull.head.label
+    });
     await github.post(`/issues/${pull.number}/comments`, {
       body: comments.pullRequestSync({ pull })
     });
