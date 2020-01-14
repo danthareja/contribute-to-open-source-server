@@ -24,6 +24,10 @@ github.interceptors.response.use(
     return response;
   },
   function onGithubError(error) {
+    // This case is caught manually during `fork` event
+    if (error.response.status === 422) {
+      return Promise.reject(error);
+    }
     console.log(error);
     return Promise.reject(
       `GITHUB API ERROR: ${
