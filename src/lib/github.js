@@ -24,6 +24,7 @@ github.interceptors.response.use(
     return response;
   },
   function onGithubError(error) {
+    console.log(error);
     return Promise.reject(
       `GITHUB API ERROR: ${
         error.response.data.message

@@ -22,13 +22,10 @@ module.exports = async function buildFinished({ build }) {
   }
 
   const pull = await github.getPullRequest(build.pull_request.id);
-  if (pull.base.ref !== pull.user.login) {
+
+  if (pull.state === 'closed') {
     console.log(
-      `Skipping build #${
-        build.number
-      } because it is for a pull request opened against wrong branch (${
-        pull.base.ref
-      } instead of ${pull.user.login})`
+      `Skipping build #${build.number} because it is for a closed pull request`
     );
     return;
   }

@@ -41,10 +41,7 @@ module.exports = async function pullRequest({ number, action }) {
 
   if (action === 'opened') {
     console.log(`Pull request #${number} opened for the first time`);
-    await buildkite.post('/builds', {
-      commit: pull.head.label,
-      branch: pull.head.label
-    });
+    await buildkite.buildPullRequest(pull);
     await github.post(`/issues/${pull.number}/comments`, {
       body: comments.pullRequestOpen({ pull })
     });
@@ -55,10 +52,7 @@ module.exports = async function pullRequest({ number, action }) {
 
   if (action === 'synchronize') {
     console.log(`Pull request #${number} synchronized`);
-    await buildkite.post('/builds', {
-      commit: pull.head.label,
-      branch: pull.head.label
-    });
+    await buildkite.buildPullRequest(pull);
     await github.post(`/issues/${pull.number}/comments`, {
       body: comments.pullRequestSync({ pull })
     });
