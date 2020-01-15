@@ -2,10 +2,6 @@
 
 {{^hasAnyErrors}}
 All the tests are passing. Nice job!
-
-{{#data.passes}}
-✅ {{{fullTitle}}}
-{{/data.passes}}
 {{/hasAnyErrors}}
 {{#hasRuntimeError}}
 There was an error when running `npm test`. Please revisit your code and fix this error.
@@ -16,16 +12,8 @@ There was an error when running `npm test`. Please revisit your code and fix thi
 
 {{/hasRuntimeError}}
 {{#hasTestErrors}}
-{{#data.stats.passes}}
-There are **{{data.stats.passes}} tests passing**. Nice job!
-{{/data.stats.passes}}
-
-{{#data.passes}}
-✅ {{{fullTitle}}}
-{{/data.passes}}
-
 {{#data.stats.pending}}
-There are **{{data.stats.pending}} tests still pending**. In your test file, change `describe.skip` to `describe` and ensure they pass. Remember, you can run the tests with `npm test`.
+There are **{{data.stats.pending}} tests still pending**. In your test file, change `describe.skip` to `describe` and ensure they pass.
 {{/data.stats.pending}}
 
 {{#data.pending}}
@@ -33,7 +21,7 @@ There are **{{data.stats.pending}} tests still pending**. In your test file, cha
 {{/data.pending}}
 
 {{#data.stats.failures}}
-There are **{{data.stats.failures}} tests failing**. Please revisit your code and make the failing tests pass. Remember, you can run the tests with `npm test`.
+There are **{{data.stats.failures}} tests failing**. Please revisit your code and make the failing tests pass.
 {{/data.stats.failures}}
 
 {{#data.failures}}
