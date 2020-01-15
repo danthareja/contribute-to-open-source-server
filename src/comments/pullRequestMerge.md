@@ -35,5 +35,3 @@ I'm always open to feedback. If you had a good time with the exercise, or found 
 
 Want to start over? [Just delete your fork](https://github.com/{{pull.user.login}}/contribute-to-open-source/settings).
 Want to see behind the scenes? [Check out the server code](https://github.com/danthareja/contribute-to-open-source-server).
-
-##### This branch will be automatically deleted after one week with no merged pull requests
