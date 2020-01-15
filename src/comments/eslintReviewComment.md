@@ -1,6 +1,4 @@
 {{{data.message}}}
 {{#data.ruleId}}
-
-###### See http://eslint.org/docs/rules/{{data.ruleId}} for details about this rule
-
+<sub>([learn more](http://eslint.org/docs/rules/{{data.ruleId}}))</sub>
 {{/data.ruleId}}
