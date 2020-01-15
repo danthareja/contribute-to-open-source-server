@@ -16,20 +16,6 @@ module.exports = async function pullRequestReview({
     return;
   }
 
-  // Ensure that we only merge pull requests made to the correct branch
-  // The `pull_request` event will close the PR on GitHub, but the CircleCI build still runs
-  // This is an extra safeguard in case the CircleCI hook submits an approved review
-  if (pull_request.base.ref !== pull_request.user.login) {
-    console.log(
-      `Ignoring review for pull request #${
-        pull_request.number
-      } opened against wrong branch (${pull_request.base.ref} instead of ${
-        pull_request.user.login
-      })`
-    );
-    return;
-  }
-
   // Ensure that we only merge pull requests that our bot account reviews
   const authenticatedUser = await github
     .get('https://api.github.com/user')
