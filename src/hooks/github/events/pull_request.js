@@ -3,7 +3,9 @@ const buildkite = require('../../../lib/buildkite');
 const comments = require('../../../comments');
 
 module.exports = async function pullRequest({ number, action }) {
-  if (action !== 'opened' && action !== 'synchronize') {
+  const allowedActions = ['opened', 'reopened', 'synchronize'];
+
+  if (allowedActions.indexOf(action) === -1) {
     console.log(`Ignoring action: ${action}`);
     return;
   }
@@ -58,6 +60,15 @@ module.exports = async function pullRequest({ number, action }) {
     await github.post(`/issues/${pull.number}/comments`, {
       body: comments.pullRequestSync({ pull })
     });
+    return {
+      success: true
+    };
+  }
+
+  if (action === 'reopened') {
+    console.log(`Pull request #${number} reopened`);
+    const build = await buildkite.buildPullRequest(pull);
+    console.log(`Created Buildkite build #${build.number}`);
     return {
       success: true
     };
