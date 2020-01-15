@@ -6,7 +6,7 @@ module.exports = async function handle(event) {
 
   if (!events[type]) {
     throw new Error(
-      `GitHub event ${type} not implemented. Please an implementation in events/ or uncheck it from the repo's webhook settings.`
+      `GitHub event ${type} not implemented. Please add an implementation in events/ or uncheck it from the repo's webhook settings.`
     );
   }
 
