@@ -31,7 +31,7 @@
     "serverless": "^1.60.5",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-ngrok-tunnel": "0.0.3",
-    "serverless-offline": "^5.12.1",
+    "serverless-offline": "^12.0.3",
     "sinon": "^2.3.5",
     "sinon-chai": "^2.11.0"
   }
